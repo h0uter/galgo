@@ -15,7 +15,9 @@ fn get_user_input(question: &str) -> String {
 
 pub fn take_game_config() -> Config {
     let solution = get_user_input("Word to be guessed:");
-    return Config{solution};
+    let user_facing_message = "_".repeat(solution.len());
+
+    return Config{solution, user_facing_message};
 }
 
 fn take_guess() -> char {
@@ -52,16 +54,15 @@ fn run_game_loop(solution: &String, user_facing_message: &mut String, input: cha
     return true;
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let mut user_facing_message: String = "_".repeat(config.solution.len());
+pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
+    println!("{}", config.user_facing_message);
 
-    println!("{}", user_facing_message);
-
-    while (run_game_loop(&config.solution, &mut user_facing_message, take_guess())) {}
+    while (run_game_loop(&config.solution, &mut config.user_facing_message, take_guess())) {}
 
     Ok(())
 }
 
 pub struct Config {
-    pub solution: String
+    pub solution: String,
+    pub user_facing_message: String,
 }
