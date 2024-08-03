@@ -18,8 +18,6 @@ fn take_guess() -> char {
 }
 
 fn run_game_loop(solution: &String, user_facing_message: &mut String, input: char) -> bool {
-    println!("{}", user_facing_message);
-
     if (!solution.contains(input)) {
         println!("too bad peanut butter");
         return false;
@@ -37,12 +35,20 @@ fn run_game_loop(solution: &String, user_facing_message: &mut String, input: cha
     }
 
     println!("{}", user_facing_message);
+
+    if (user_facing_message == solution) {
+        println!("you win!");
+        return false;
+    }
+
     return true;
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let solution = fs::read_to_string(config.file_path)?;
     let mut user_facing_message: String = "_".repeat(solution.len());
+
+    println!("{}", user_facing_message);
 
     while (run_game_loop(&solution, &mut user_facing_message, take_guess())) {}
 
