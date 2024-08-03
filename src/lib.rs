@@ -27,26 +27,26 @@ fn take_guess() -> char {
         .expect("no single char in the input");
 }
 
-fn run_game_loop(solution: &String, user_facing_message: &mut String, input: char) -> bool {
-    if (!solution.contains(input)) {
+fn run_game_loop(config: &mut Config, input: char) -> bool {
+    if (!config.solution.contains(input)) {
         println!("too bad peanut butter");
         return false;
     }
 
     // let match_idx = solution.find(input).expect("didnt find input");
 
-    let indices: Vec<usize> = solution
+    let indices: Vec<usize> = config.solution
         .char_indices()
         .filter_map(|(i, c)| if c == input { Some(i) } else { None })
         .collect();
 
     for index in indices {
-        user_facing_message.replace_range(index..index + 1, &input.to_string());
+        config.user_facing_message.replace_range(index..index + 1, &input.to_string());
     }
 
-    println!("{}", user_facing_message);
+    println!("{}", config.user_facing_message);
 
-    if (user_facing_message == solution) {
+    if (config.user_facing_message == config.solution) {
         println!("you win!");
         return false;
     }
@@ -57,7 +57,7 @@ fn run_game_loop(solution: &String, user_facing_message: &mut String, input: cha
 pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
     println!("{}", config.user_facing_message);
 
-    while (run_game_loop(&config.solution, &mut config.user_facing_message, take_guess())) {}
+    while (run_game_loop(config, take_guess())) {}
 
     Ok(())
 }
