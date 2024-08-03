@@ -32,8 +32,6 @@ fn run_game_loop(config: &mut Config, input: char) -> GameState {
         return GameState::LOST;
     }
 
-    // let match_idx = solution.find(input).expect("didnt find input");
-
     let indices: Vec<usize> = config.solution
         .char_indices()
         .filter_map(|(i, c)| if c == input { Some(i) } else { None })
