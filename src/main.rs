@@ -3,12 +3,9 @@ use std::{env, process};
 use galgo::Config;
 
 fn main() {
-    let config = Config::build(env::args()).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {err}");
-        process::exit(1);
-    });
+    let game_config = galgo::take_game_config();
 
-    if let Err(e) = galgo::run(config) {
+    if let Err(e) = galgo::run(game_config) {
         eprintln!("Application error {e}");
         process::exit(1);
     }

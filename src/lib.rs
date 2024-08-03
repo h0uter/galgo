@@ -13,6 +13,11 @@ fn get_user_input(question: &str) -> String {
     return input.trim().to_string();
 }
 
+pub fn take_game_config() -> Config {
+    let solution = get_user_input("Word to be guessed:");
+    return Config{solution};
+}
+
 fn take_guess() -> char {
     return get_user_input("Please enter some input:")
         .chars()
@@ -48,43 +53,17 @@ fn run_game_loop(solution: &String, user_facing_message: &mut String, input: cha
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let solution = fs::read_to_string(config.file_path)?;
-    let mut user_facing_message: String = "_".repeat(solution.len());
+    let mut user_facing_message: String = "_".repeat(config.solution.len());
 
     println!("{}", user_facing_message);
 
-    while (run_game_loop(&solution, &mut user_facing_message, take_guess())) {}
+    while (run_game_loop(&config.solution, &mut user_facing_message, take_guess())) {}
 
     Ok(())
 }
 
 pub struct Config {
-    pub guess: String,
-    pub file_path: String,
-    pub ignore_case: bool,
-}
-
-impl Config {
-    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
-        args.next(); // pop the caller name
-
-        let query = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Didnt get a query string"),
-        };
-        let file_path = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Didnt get a file path string"),
-        };
-
-        let ignore_case = env::var("IGNORE_CASE").is_ok();
-
-        Ok(Config {
-            guess: query,
-            file_path,
-            ignore_case,
-        })
-    }
+    pub solution: String
 }
 
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
