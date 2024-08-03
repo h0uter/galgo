@@ -27,10 +27,9 @@ fn take_guess() -> char {
         .expect("no single char in the input");
 }
 
-fn run_game_loop(config: &mut Config, input: char) -> bool {
+fn run_game_loop(config: &mut Config, input: char) -> GameState {
     if (!config.solution.contains(input)) {
-        println!("too bad peanut butter");
-        return false;
+        return GameState::LOST;
     }
 
     // let match_idx = solution.find(input).expect("didnt find input");
@@ -47,17 +46,27 @@ fn run_game_loop(config: &mut Config, input: char) -> bool {
     println!("{}", config.user_facing_message);
 
     if (config.user_facing_message == config.solution) {
-        println!("you win!");
-        return false;
+        return GameState::WON;
     }
 
-    return true;
+    return GameState::PLAYING;
 }
 
 pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
     println!("{}", config.user_facing_message);
 
-    while (run_game_loop(config, take_guess())) {}
+    let mut state: GameState = GameState::PLAYING;
+    while (state == GameState::PLAYING) {
+        state = run_game_loop(config, take_guess());
+
+        if (state == GameState::LOST) {
+            println!("too bad peanut butter");
+        }
+
+        if (state == GameState::WON) {
+            println!("you win!");
+        }
+    }
 
     Ok(())
 }
@@ -65,4 +74,11 @@ pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
 pub struct Config {
     pub solution: String,
     pub user_facing_message: String,
+}
+
+#[derive(PartialEq, Eq)]
+enum GameState {
+    PLAYING,
+    WON,
+    LOST
 }
