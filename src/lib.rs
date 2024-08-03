@@ -2,19 +2,22 @@ use std::fmt::Write;
 use std::io;
 use std::{env, error::Error, fs};
 
-fn take_guess() -> char {
-    // Create a new String object to store the user input
+fn get_user_input(question: &str) -> String {
+    println!("{}", question);
+
     let mut input = String::new();
-
-    // Print a prompt to the user
-    println!("Please enter some input:");
-
-    // Read the input from stdin and handle potential errors
     io::stdin()
         .read_line(&mut input)
         .expect("Failed to read line");
 
-    return input.chars().next().expect("no single char in the input");
+    return input.trim().to_string();
+}
+
+fn take_guess() -> char {
+    return get_user_input("Please enter some input:")
+        .chars()
+        .next()
+        .expect("no single char in the input");
 }
 
 fn run_game_loop(solution: &String, user_facing_message: &mut String, input: char) -> bool {
