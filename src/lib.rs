@@ -27,7 +27,7 @@ fn take_guess() -> char {
 }
 
 fn run_game_loop(config: &mut Config, input: char) -> GameState {
-    if (!config.solution.contains(input)) {
+    if !config.solution.contains(input) {
         return GameState::LOST;
     }
 
@@ -42,7 +42,7 @@ fn run_game_loop(config: &mut Config, input: char) -> GameState {
 
     println!("{}", config.user_facing_message);
 
-    if (config.user_facing_message == config.solution) {
+    if config.user_facing_message == config.solution {
         return GameState::WON;
     }
 
@@ -53,14 +53,14 @@ pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
     println!("{}", config.user_facing_message);
 
     let mut state: GameState = GameState::PLAYING;
-    while (state == GameState::PLAYING) {
+    while state == GameState::PLAYING {
         state = run_game_loop(config, take_guess());
 
-        if (state == GameState::LOST) {
+        if state == GameState::LOST {
             println!("too bad peanut butter");
         }
 
-        if (state == GameState::WON) {
+        if state == GameState::WON {
             println!("you win!");
         }
     }
