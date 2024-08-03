@@ -1,6 +1,5 @@
-use std::fmt::Write;
 use std::io;
-use std::{env, error::Error, fs};
+use std::{error::Error};
 
 fn get_user_input(question: &str) -> String {
     println!("{}", question);

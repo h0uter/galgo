@@ -1,6 +1,4 @@
-use std::{env, process};
-
-use galgo::Config;
+use std::{process};
 
 fn main() {
     let mut game_config = galgo::take_game_config();
