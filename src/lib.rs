@@ -8,7 +8,9 @@ mod cli;
 
 // game core
 
-fn run_game_loop(config: &Config, guess: char, player_state: &mut PlayerState) -> GameState {
+fn run_guess_loop(config: &Config, guess: char, player_state: &mut PlayerState) -> GameState {
+    // runs the logic for a single letter guess
+
     if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
 
@@ -50,11 +52,12 @@ fn update_correctly_guessed_letters(config: &Config, player_state: &mut PlayerSt
 }
 
 fn run_game(config: &Config) {
+    // run a single galgo game
     let mut state: GameState = GameState::PLAYING;
     let mut player_state = PlayerState::build(config);
 
     while state == GameState::PLAYING {
-        state = run_game_loop(config, crate::cli::take_guess(), &mut player_state);
+        state = run_guess_loop(config, crate::cli::take_guess(), &mut player_state);
 
         if state == GameState::LOST {
             crate::cli::print_loss()
@@ -67,6 +70,7 @@ fn run_game(config: &Config) {
 }
 
 pub fn run(config: &Config) -> Result<(), Box<dyn Error>> {
+    // run galgo with potential rematches
     let mut rematch = true;
 
     while rematch == true {
