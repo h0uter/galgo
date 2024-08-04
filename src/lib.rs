@@ -1,8 +1,8 @@
 use std::error::Error;
 use std::io;
 
-fn get_user_input(question: &str) -> String {
-    println!("{}", question);
+fn get_user_input(prompt: &str) -> String {
+    println!("{}", prompt);
 
     let mut input = String::new();
     io::stdin()
@@ -34,13 +34,13 @@ fn run_game_loop(config: &mut Config, input: char) -> GameState {
     // Fill in the correctly guessed letters in the user facing message
     for hit_idx in hit_idxs {
         config
-            .user_facing_message
+            .correctly_guessed_letters
             .replace_range(hit_idx..hit_idx + 1, &input.to_string());
     }
 
-    println!("status: {}", config.user_facing_message);
+    println!("status: {}", config.correctly_guessed_letters);
 
-    if config.user_facing_message == config.secret_word {
+    if config.correctly_guessed_letters == config.secret_word {
         return GameState::WON;
     }
 
@@ -48,7 +48,7 @@ fn run_game_loop(config: &mut Config, input: char) -> GameState {
 }
 
 pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
-    println!("{}", config.user_facing_message);
+    println!("{}", config.correctly_guessed_letters);
 
     let mut state: GameState = GameState::PLAYING;
     while state == GameState::PLAYING {
@@ -68,17 +68,17 @@ pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
 
 pub struct Config {
     pub secret_word: String,
-    pub user_facing_message: String,
+    pub correctly_guessed_letters: String,
 }
 
 impl Config {
     pub fn build() -> Config {
         let secret_word = get_user_input("Provide your secret word:");
-        let user_facing_message = "_".repeat(secret_word.len());
+        let correctly_guessed_letters = "_".repeat(secret_word.len());
 
         return Config {
             secret_word,
-            user_facing_message,
+            correctly_guessed_letters,
         };
     }
 }
