@@ -1,11 +1,18 @@
 use std::error::Error;
+// config
+pub mod config;
+pub use crate::config::Config;
 
 // CLI input output
 mod cli;
 
 // game core
 
-fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerState) -> GameState {
+fn run_game_loop(
+    config: &mut config::Config,
+    guess: char,
+    player_state: &mut PlayerState,
+) -> GameState {
     if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
 
@@ -30,7 +37,11 @@ fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerStat
     return GameState::PLAYING;
 }
 
-fn update_correctly_guessed_letters(config: &Config, player_state: &mut PlayerState, guess: char) {
+fn update_correctly_guessed_letters(
+    config: &config::Config,
+    player_state: &mut PlayerState,
+    guess: char,
+) {
     // check for hits of guess in solution
     let hit_idxs: Vec<usize> = config
         .secret_word
@@ -46,7 +57,7 @@ fn update_correctly_guessed_letters(config: &Config, player_state: &mut PlayerSt
     }
 }
 
-pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
+pub fn run(config: &mut config::Config) -> Result<(), Box<dyn Error>> {
     let mut state: GameState = GameState::PLAYING;
     let mut player_state = PlayerState::build(config);
 
@@ -79,7 +90,7 @@ struct PlayerState {
 }
 
 impl PlayerState {
-    pub fn build(config: &Config) -> PlayerState {
+    pub fn build(config: &config::Config) -> PlayerState {
         let wrong_guesses = 0;
         let correctly_guessed_letters = "_".repeat(config.secret_word.len());
 
@@ -87,26 +98,5 @@ impl PlayerState {
             wrong_guesses,
             correctly_guessed_letters,
         };
-    }
-}
-
-// config
-
-pub struct Config {
-    // Static configuration we take at the start
-    pub secret_word: String,
-    pub lives: usize,
-}
-
-impl Config {
-    pub fn build() -> Config {
-        let secret_word = crate::cli::take_user_input("Provide your secret word:");
-        let lives = 3; // cannot be larger than seven
-
-        if lives > 7 {
-            panic!("lives cannot be larger than 7, we dont have more hangman drawings.")
-        }
-
-        return Config { secret_word, lives };
     }
 }
