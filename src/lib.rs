@@ -4,6 +4,7 @@ use std::io;
 // CLI input output
 
 fn take_user_input(prompt: &str) -> String {
+    // read whatever from stdin as string
     println!("{}", prompt);
 
     let mut input = String::new();
@@ -15,6 +16,7 @@ fn take_user_input(prompt: &str) -> String {
 }
 
 fn take_guess() -> char {
+    // take a single character as guess input
     return take_user_input("Provide the character you want to guess: ")
         .chars()
         .next()
@@ -84,7 +86,7 @@ fn print_hangman_stage(incorrect_guesses: usize) {
     if incorrect_guesses < HANGMAN_STAGES.len() {
         println!("{}", HANGMAN_STAGES[incorrect_guesses]);
     } else {
-        println!("Invalid number of incorrect guesses.");
+        panic!("Invalid number of incorrect guesses.");
     }
 }
 
@@ -99,7 +101,7 @@ fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerStat
         player_state.wrong_guesses += 1;
 
         print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
-        
+
         if player_state.wrong_guesses == config.lives {
             return GameState::LOST;
         } else {
@@ -160,6 +162,13 @@ pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+#[derive(PartialEq, Eq)]
+enum GameState {
+    PLAYING,
+    WON,
+    LOST,
+}
+
 // config
 
 pub struct Config {
@@ -184,11 +193,4 @@ impl Config {
             lives,
         };
     }
-}
-
-#[derive(PartialEq, Eq)]
-enum GameState {
-    PLAYING,
-    WON,
-    LOST,
 }
