@@ -14,6 +14,7 @@ pub fn take_user_input(prompt: &str) -> String {
 
 pub fn take_guess() -> char {
     // take a single character as guess input
+    // TODO: add check for whether more than 1 char was entered
     return take_user_input("Provide the character you want to guess: ")
         .chars()
         .next()
