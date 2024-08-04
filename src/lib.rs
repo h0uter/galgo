@@ -5,10 +5,6 @@ mod cli;
 
 // game core
 
-struct PlayerState {
-    wrong_guesses: usize,
-}
-
 fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerState) -> GameState {
     if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
@@ -26,18 +22,21 @@ fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerStat
         }
     }
 
-    update_correctly_guessed_letters(config, guess);
+    update_correctly_guessed_letters(config, player_state, guess);
 
-    println!("CORRECT... status: {}", config.correctly_guessed_letters);
+    println!(
+        "CORRECT... status: {}",
+        player_state.correctly_guessed_letters
+    );
 
-    if config.correctly_guessed_letters == config.secret_word {
+    if player_state.correctly_guessed_letters == config.secret_word {
         return GameState::WON;
     }
 
     return GameState::PLAYING;
 }
 
-fn update_correctly_guessed_letters(config: &mut Config, guess: char) {
+fn update_correctly_guessed_letters(config: &Config, player_state: &mut PlayerState, guess: char) {
     // check for hits of guess in solution
     let hit_idxs: Vec<usize> = config
         .secret_word
@@ -47,7 +46,7 @@ fn update_correctly_guessed_letters(config: &mut Config, guess: char) {
 
     // Fill in the correctly guessed letters in the user facing message
     for hit_idx in hit_idxs {
-        config
+        player_state
             .correctly_guessed_letters
             .replace_range(hit_idx..hit_idx + 1, &guess.to_string());
     }
@@ -55,7 +54,7 @@ fn update_correctly_guessed_letters(config: &mut Config, guess: char) {
 
 pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
     let mut state: GameState = GameState::PLAYING;
-    let mut player_state = PlayerState { wrong_guesses: 0 };
+    let mut player_state = PlayerState::build(config);
 
     while state == GameState::PLAYING {
         state = run_game_loop(config, crate::cli::take_guess(), &mut player_state);
@@ -83,24 +82,35 @@ enum GameState {
 
 pub struct Config {
     pub secret_word: String,
-    pub correctly_guessed_letters: String,
     pub lives: usize,
 }
 
 impl Config {
     pub fn build() -> Config {
         let secret_word = crate::cli::take_user_input("Provide your secret word:");
-        let correctly_guessed_letters = "_".repeat(secret_word.len());
         let lives = 3; // cannot be larger than seven
 
         if lives > 7 {
             panic!("lives cannot be larger than 7, we dont have more hangman drawings.")
         }
 
-        return Config {
-            secret_word,
+        return Config { secret_word, lives };
+    }
+}
+
+struct PlayerState {
+    wrong_guesses: usize,
+    correctly_guessed_letters: String,
+}
+
+impl PlayerState {
+    pub fn build(config: &Config) -> PlayerState {
+        let wrong_guesses = 0;
+        let correctly_guessed_letters = "_".repeat(config.secret_word.len());
+
+        return PlayerState {
+            wrong_guesses,
             correctly_guessed_letters,
-            lives,
         };
     }
 }
