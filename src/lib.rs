@@ -14,20 +14,14 @@ fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerStat
         if player_state.wrong_guesses >= config.lives {
             return GameState::LOST;
         } else {
-            println!(
-                "WRONG... lives remaining {}",
-                config.lives - player_state.wrong_guesses
-            );
+            crate::cli::print_wrong_guess(&(config.lives - player_state.wrong_guesses));
             return GameState::PLAYING;
         }
     }
 
     update_correctly_guessed_letters(config, player_state, guess);
 
-    println!(
-        "CORRECT... status: {}",
-        player_state.correctly_guessed_letters
-    );
+    crate::cli::print_correct_guess(&player_state.correctly_guessed_letters);
 
     if player_state.correctly_guessed_letters == config.secret_word {
         return GameState::WON;

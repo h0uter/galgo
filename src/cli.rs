@@ -96,3 +96,11 @@ pub fn print_win() {
     println!("");
     println!("🎉🎉🎉 YOU WIN! 🎉🎉🎉");
 }
+
+pub fn print_correct_guess(letters: &String) {
+    println!("CORRECT... status: {}", letters);
+}
+
+pub fn print_wrong_guess(lives_remaining: &usize) {
+    println!("WRONG... lives remaining {}", lives_remaining);
+}
