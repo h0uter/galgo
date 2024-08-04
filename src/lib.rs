@@ -46,7 +46,6 @@ fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerStat
         return GameState::WON;
     }
 
-    // return GameState::PLAYING;
     return GameState::PLAYING;
 }
 
