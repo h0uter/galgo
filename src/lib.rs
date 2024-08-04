@@ -8,11 +8,7 @@ mod cli;
 
 // game core
 
-fn run_game_loop(
-    config: &mut config::Config,
-    guess: char,
-    player_state: &mut PlayerState,
-) -> GameState {
+fn run_game_loop(config: &Config, guess: char, player_state: &mut PlayerState) -> GameState {
     if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
 
@@ -37,11 +33,7 @@ fn run_game_loop(
     return GameState::PLAYING;
 }
 
-fn update_correctly_guessed_letters(
-    config: &config::Config,
-    player_state: &mut PlayerState,
-    guess: char,
-) {
+fn update_correctly_guessed_letters(config: &Config, player_state: &mut PlayerState, guess: char) {
     // check for hits of guess in solution
     let hit_idxs: Vec<usize> = config
         .secret_word
@@ -57,7 +49,7 @@ fn update_correctly_guessed_letters(
     }
 }
 
-pub fn run(config: &mut config::Config) -> Result<(), Box<dyn Error>> {
+pub fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     let mut state: GameState = GameState::PLAYING;
     let mut player_state = PlayerState::build(config);
 
@@ -90,7 +82,7 @@ struct PlayerState {
 }
 
 impl PlayerState {
-    pub fn build(config: &config::Config) -> PlayerState {
+    pub fn build(config: &Config) -> PlayerState {
         let wrong_guesses = 0;
         let correctly_guessed_letters = "_".repeat(config.secret_word.len());
 
