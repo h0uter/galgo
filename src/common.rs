@@ -3,8 +3,8 @@ use serde::{Serialize, Deserialize};
 
 #[derive(PartialEq, Eq)]
 pub enum ClientRole {
-    WORD_MASTER,
-    GUESSING_PLAYER,
+    WordMaster,
+    GuessingPlayer,
 }
 
 pub struct WordMasterConfig {
@@ -17,8 +17,8 @@ pub struct GuessingPlayerConfig {
 }
 
 pub enum RoleSpecificConfig {
-    WORD_MASTER(WordMasterConfig),
-    GUESSING_PLAYER(GuessingPlayerConfig),
+    WordMaster(WordMasterConfig),
+    GuessingPlayer(GuessingPlayerConfig),
 }
 
 pub struct Config {

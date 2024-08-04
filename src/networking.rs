@@ -35,8 +35,8 @@ pub fn establish_connection() -> (ClientRole, TcpStream) {
     let choice = get_user_input("Press 1 for Word Master or 2 for Guessing Player.");
 
     match choice.as_str() {
-        "1" => return (ClientRole::WORD_MASTER, listen_for_peer()),
-        "2" => return (ClientRole::GUESSING_PLAYER, connect_to_peer()),
+        "1" => return (ClientRole::WordMaster, listen_for_peer()),
+        "2" => return (ClientRole::GuessingPlayer, connect_to_peer()),
         _ => panic!("Invalid option {}. Accepted values in [1, 2].", choice),
     }
 }

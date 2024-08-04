@@ -73,8 +73,8 @@ fn run_guessing_player_game_loop(connection: &mut TcpStream, config: &mut Guessi
 
 fn run_game_loop(config: &mut Config) -> GameState {
     match config.role_config {
-        RoleSpecificConfig::WORD_MASTER(ref mut role_config) => return run_word_master_game_loop(& mut config.connection, role_config),
-        RoleSpecificConfig::GUESSING_PLAYER(ref mut role_config)=> return run_guessing_player_game_loop(& mut config.connection, role_config),
+        RoleSpecificConfig::WordMaster(ref mut role_config) => return run_word_master_game_loop(& mut config.connection, role_config),
+        RoleSpecificConfig::GuessingPlayer(ref mut role_config)=> return run_guessing_player_game_loop(& mut config.connection, role_config),
     }
 }
 
@@ -82,18 +82,18 @@ pub fn init_game_config() -> Config {
     let (role, mut connection) = establish_connection();
 
     let role_config = || -> RoleSpecificConfig {
-        if role == ClientRole::WORD_MASTER {
+        if role == ClientRole::WordMaster {
             let solution = get_user_input("Word to be guessed:");
 
             send_solution_size(&mut connection, solution.len());
 
-            return RoleSpecificConfig::WORD_MASTER(WordMasterConfig{solution});
+            return RoleSpecificConfig::WordMaster(WordMasterConfig{solution});
         }
 
         let lives: i8 = 3;
         let partial_solution = "_".repeat(receive_solution_size(&mut connection));
 
-        return RoleSpecificConfig::GUESSING_PLAYER(GuessingPlayerConfig{lives, partial_solution});
+        return RoleSpecificConfig::GuessingPlayer(GuessingPlayerConfig{lives, partial_solution});
     }();
 
     return Config{connection, role_config};
