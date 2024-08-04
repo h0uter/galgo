@@ -75,7 +75,7 @@ pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
 
         if state == GameState::LOST {
             println!("");
-            println!("too bad peanut butter... YOU LOST!");
+            println!("too bad peanut butter... 🤡🤡🤡 YOU LOST! 🤡🤡🤡");
         }
 
         if state == GameState::WON {
