@@ -102,7 +102,7 @@ fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerStat
 
         print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
 
-        if player_state.wrong_guesses == config.lives {
+        if player_state.wrong_guesses >= config.lives {
             return GameState::LOST;
         } else {
             println!(
@@ -121,7 +121,6 @@ fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerStat
         return GameState::WON;
     }
 
-    // return GameState::PLAYING;
     return GameState::PLAYING;
 }
 
