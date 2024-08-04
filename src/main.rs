@@ -1,14 +1,9 @@
-use std::{env, process};
-
-use galgo::Config;
+use std::{process};
 
 fn main() {
-    let config = Config::build(env::args()).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {err}");
-        process::exit(1);
-    });
+    let mut game_config = galgo::take_game_config();
 
-    if let Err(e) = galgo::run(config) {
+    if let Err(e) = galgo::run(&mut game_config) {
         eprintln!("Application error {e}");
         process::exit(1);
     }
