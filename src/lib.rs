@@ -78,9 +78,28 @@ enum GameState {
     LOST,
 }
 
+struct PlayerState {
+    // Dynamic state of the game
+    wrong_guesses: usize,
+    correctly_guessed_letters: String,
+}
+
+impl PlayerState {
+    pub fn build(config: &Config) -> PlayerState {
+        let wrong_guesses = 0;
+        let correctly_guessed_letters = "_".repeat(config.secret_word.len());
+
+        return PlayerState {
+            wrong_guesses,
+            correctly_guessed_letters,
+        };
+    }
+}
+
 // config
 
 pub struct Config {
+    // Static configuration we take at the start
     pub secret_word: String,
     pub lives: usize,
 }
@@ -95,22 +114,5 @@ impl Config {
         }
 
         return Config { secret_word, lives };
-    }
-}
-
-struct PlayerState {
-    wrong_guesses: usize,
-    correctly_guessed_letters: String,
-}
-
-impl PlayerState {
-    pub fn build(config: &Config) -> PlayerState {
-        let wrong_guesses = 0;
-        let correctly_guessed_letters = "_".repeat(config.secret_word.len());
-
-        return PlayerState {
-            wrong_guesses,
-            correctly_guessed_letters,
-        };
     }
 }
