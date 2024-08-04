@@ -27,7 +27,7 @@ fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerStat
     if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
 
-        if player_state.wrong_guesses > config.lives {
+        if player_state.wrong_guesses >= config.lives {
             return GameState::LOST;
         } else {
             println!(
