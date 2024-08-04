@@ -20,11 +20,11 @@ fn take_guess() -> char {
 }
 
 struct PlayerState {
-    pub wrong_guesses: u32,
+    wrong_guesses: u32,
 }
 
-fn run_game_loop(config: &mut Config, input: char, player_state: &mut PlayerState) -> GameState {
-    if !config.secret_word.contains(input) {
+fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerState) -> GameState {
+    if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
 
         if player_state.wrong_guesses > config.lives {
@@ -38,19 +38,7 @@ fn run_game_loop(config: &mut Config, input: char, player_state: &mut PlayerStat
         }
     }
 
-    // check for hits of guess in solution
-    let hit_idxs: Vec<usize> = config
-        .secret_word
-        .char_indices()
-        .filter_map(|(i, c)| if c == input { Some(i) } else { None })
-        .collect();
-
-    // Fill in the correctly guessed letters in the user facing message
-    for hit_idx in hit_idxs {
-        config
-            .correctly_guessed_letters
-            .replace_range(hit_idx..hit_idx + 1, &input.to_string());
-    }
+    update_correctly_guessed_letters(config, guess);
 
     println!("CORRECT... status: {}", config.correctly_guessed_letters);
 
@@ -60,6 +48,22 @@ fn run_game_loop(config: &mut Config, input: char, player_state: &mut PlayerStat
 
     // return GameState::PLAYING;
     return GameState::PLAYING;
+}
+
+fn update_correctly_guessed_letters(config: &mut Config, guess: char) {
+    // check for hits of guess in solution
+    let hit_idxs: Vec<usize> = config
+        .secret_word
+        .char_indices()
+        .filter_map(|(i, c)| if c == guess { Some(i) } else { None })
+        .collect();
+
+    // Fill in the correctly guessed letters in the user facing message
+    for hit_idx in hit_idxs {
+        config
+            .correctly_guessed_letters
+            .replace_range(hit_idx..hit_idx + 1, &guess.to_string());
+    }
 }
 
 pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
