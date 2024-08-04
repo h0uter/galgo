@@ -50,21 +50,29 @@ fn update_correctly_guessed_letters(config: &Config, player_state: &mut PlayerSt
 }
 
 pub fn run(config: &Config) -> Result<(), Box<dyn Error>> {
-    let mut state: GameState = GameState::PLAYING;
-    let mut player_state = PlayerState::build(config);
+    let mut rematch = true;
 
-    while state == GameState::PLAYING {
-        state = run_game_loop(config, crate::cli::take_guess(), &mut player_state);
+    while rematch == true {
+        let mut state: GameState = GameState::PLAYING;
+        let mut player_state = PlayerState::build(config);
 
-        if state == GameState::LOST {
-            crate::cli::print_loss()
+        while state == GameState::PLAYING {
+            state = run_game_loop(config, crate::cli::take_guess(), &mut player_state);
+
+            if state == GameState::LOST {
+                crate::cli::print_loss()
+            }
+
+            if state == GameState::WON {
+                crate::cli::print_win()
+            }
         }
 
-        if state == GameState::WON {
-            crate::cli::print_win()
+        let rematch_input = crate::cli::take_user_input("Do you want a rematch? (yes/no)");
+        if rematch_input.contains("n") {
+            rematch = false
         }
     }
-
     Ok(())
 }
 
