@@ -61,13 +61,11 @@ pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
         state = run_game_loop(config, crate::cli::take_guess(), &mut player_state);
 
         if state == GameState::LOST {
-            println!("");
-            println!("too bad peanut butter... 🤡🤡🤡 YOU LOST! 🤡🤡🤡");
+            crate::cli::print_loss()
         }
 
         if state == GameState::WON {
-            println!("");
-            println!("🎉🎉🎉 YOU WIN! 🎉🎉🎉");
+            crate::cli::print_win()
         }
     }
 

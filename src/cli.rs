@@ -86,3 +86,13 @@ pub fn print_hangman_stage(incorrect_guesses: usize) {
         panic!("Invalid number of incorrect guesses.");
     }
 }
+
+pub fn print_loss() {
+    println!("");
+    println!("too bad peanut butter... 🤡🤡🤡 YOU LOST! 🤡🤡🤡");
+}
+
+pub fn print_win() {
+    println!("");
+    println!("🎉🎉🎉 YOU WIN! 🎉🎉🎉");
+}
