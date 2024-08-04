@@ -1,5 +1,5 @@
+use std::error::Error;
 use std::io;
-use std::{error::Error};
 
 fn get_user_input(question: &str) -> String {
     println!("{}", question);
@@ -10,13 +10,6 @@ fn get_user_input(question: &str) -> String {
         .expect("Failed to read line");
 
     return input.trim().to_string();
-}
-
-pub fn take_game_config() -> Config {
-    let solution = get_user_input("Word to be guessed:");
-    let user_facing_message = "_".repeat(solution.len());
-
-    return Config{solution, user_facing_message};
 }
 
 fn take_guess() -> char {
@@ -31,13 +24,16 @@ fn run_game_loop(config: &mut Config, input: char) -> GameState {
         return GameState::LOST;
     }
 
-    let indices: Vec<usize> = config.solution
+    let indices: Vec<usize> = config
+        .solution
         .char_indices()
         .filter_map(|(i, c)| if c == input { Some(i) } else { None })
         .collect();
 
     for index in indices {
-        config.user_facing_message.replace_range(index..index + 1, &input.to_string());
+        config
+            .user_facing_message
+            .replace_range(index..index + 1, &input.to_string());
     }
 
     println!("{}", config.user_facing_message);
@@ -73,9 +69,21 @@ pub struct Config {
     pub user_facing_message: String,
 }
 
+impl Config {
+    pub fn build() -> Config {
+        let solution = get_user_input("Word to be guessed:");
+        let user_facing_message = "_".repeat(solution.len());
+
+        return Config {
+            solution,
+            user_facing_message,
+        };
+    }
+}
+
 #[derive(PartialEq, Eq)]
 enum GameState {
     PLAYING,
     WON,
-    LOST
+    LOST,
 }
