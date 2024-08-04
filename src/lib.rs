@@ -1,94 +1,7 @@
 use std::error::Error;
-use std::io;
 
 // CLI input output
-
-fn take_user_input(prompt: &str) -> String {
-    // read whatever from stdin as string
-    println!("{}", prompt);
-
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
-
-    return input.trim().to_string();
-}
-
-fn take_guess() -> char {
-    // take a single character as guess input
-    return take_user_input("Provide the character you want to guess: ")
-        .chars()
-        .next()
-        .expect("More than one character was guessed.");
-}
-
-const HANGMAN_STAGES: [&str; 7] = [
-    "
-       +---+
-       |   |
-           |
-           |
-           |
-           |
-     =========",
-    "
-       +---+
-       |   |
-       O   |
-           |
-           |
-           |
-     =========",
-    "
-       +---+
-       |   |
-       O   |
-       |   |
-           |
-           |
-     =========",
-    "
-       +---+
-       |   |
-       O   |
-      /|   |
-           |
-           |
-     =========",
-    "
-       +---+
-       |   |
-       O   |
-      /|\\  |
-           |
-           |
-     =========",
-    "
-       +---+
-       |   |
-       O   |
-      /|\\  |
-      /    |
-           |
-     =========",
-    "
-       +---+
-       |   |
-       O   |
-      /|\\  |
-      / \\  |
-           |
-     =========",
-];
-
-fn print_hangman_stage(incorrect_guesses: usize) {
-    if incorrect_guesses < HANGMAN_STAGES.len() {
-        println!("{}", HANGMAN_STAGES[incorrect_guesses]);
-    } else {
-        panic!("Invalid number of incorrect guesses.");
-    }
-}
+mod cli;
 
 // game core
 
@@ -100,7 +13,7 @@ fn run_game_loop(config: &mut Config, guess: char, player_state: &mut PlayerStat
     if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
 
-        print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
+        crate::cli::print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
 
         if player_state.wrong_guesses >= config.lives {
             return GameState::LOST;
@@ -145,7 +58,7 @@ pub fn run(config: &mut Config) -> Result<(), Box<dyn Error>> {
     let mut player_state = PlayerState { wrong_guesses: 0 };
 
     while state == GameState::PLAYING {
-        state = run_game_loop(config, take_guess(), &mut player_state);
+        state = run_game_loop(config, crate::cli::take_guess(), &mut player_state);
 
         if state == GameState::LOST {
             println!("");
@@ -178,7 +91,7 @@ pub struct Config {
 
 impl Config {
     pub fn build() -> Config {
-        let secret_word = take_user_input("Provide your secret word:");
+        let secret_word = crate::cli::take_user_input("Provide your secret word:");
         let correctly_guessed_letters = "_".repeat(secret_word.len());
         let lives = 3; // cannot be larger than seven
 
