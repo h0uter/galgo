@@ -1,7 +1,7 @@
-use std::{process};
+use std::process;
 
 fn main() {
-    let mut game_config = galgo::take_game_config();
+    let mut game_config = galgo::Config::build();
 
     if let Err(e) = galgo::run(&mut game_config) {
         eprintln!("Application error {e}");
