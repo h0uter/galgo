@@ -8,7 +8,7 @@ mod cli;
 
 // game core
 
-// This loop will be the concern of the "word master" in a later increment
+// This function will be the concern of the "word master" in a later increment
 fn is_correct_guess(config: &Config, player_state: &mut PlayerState, guess: char) -> bool {
     if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
