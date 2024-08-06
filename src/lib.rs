@@ -19,10 +19,14 @@ fn is_correct_guess(config: &Config, player_state: &mut PlayerState, guess: char
     return true;
 }
 
-fn run_guessing_player_loop(config: &Config, player_state: &mut PlayerState) -> GameState {
-    let guess = cli::take_guess();
+// This function and the print_and_determine function below will be the concern of
+// the "guessing player" in a later increment.
+fn take_guessing_player_guess() -> char {
+    cli::take_guess()
+}
 
-    if !is_correct_guess(config, player_state, guess) {
+fn print_and_determine_game_state(config: &Config, player_state: &mut PlayerState, correct_guess: bool) -> GameState {
+    if correct_guess {
         cli::print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
 
         if player_state.wrong_guesses >= config.lives {
@@ -43,7 +47,9 @@ fn run_guessing_player_loop(config: &Config, player_state: &mut PlayerState) -> 
 }
 
 fn run_game_loop(config: &Config, player_state: &mut PlayerState) -> GameState {
-    return run_guessing_player_loop(config, player_state);
+    let guess = take_guessing_player_guess();
+    let correct_guess = is_correct_guess(config, player_state, guess);
+    return print_and_determine_game_state(config, player_state, correct_guess);
 }
 
 fn update_correctly_guessed_letters(config: &Config, player_state: &mut PlayerState, guess: char) {
