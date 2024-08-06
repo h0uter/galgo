@@ -8,7 +8,7 @@ mod cli;
 
 // game core
 
-fn run_game_loop(config: &Config, player_state: &mut PlayerState) -> GameState {
+fn run_guessing_player_loop(config: &Config, player_state: &mut PlayerState) -> GameState {
     let guess = cli::take_guess();
 
     if !config.secret_word.contains(guess) {
@@ -33,6 +33,10 @@ fn run_game_loop(config: &Config, player_state: &mut PlayerState) -> GameState {
     }
 
     return GameState::PLAYING;
+}
+
+fn run_game_loop(config: &Config, player_state: &mut PlayerState) -> GameState {
+    return run_guessing_player_loop(config, player_state);
 }
 
 fn update_correctly_guessed_letters(config: &Config, player_state: &mut PlayerState, guess: char) {
