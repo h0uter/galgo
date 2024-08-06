@@ -8,25 +8,32 @@ mod cli;
 
 // game core
 
+// This loop will be the concern of the "word master" in a later increment
+fn is_correct_guess(config: &Config, player_state: &mut PlayerState, guess: char) -> bool {
+    if !config.secret_word.contains(guess) {
+        player_state.wrong_guesses += 1;
+        return false;
+    }
+
+    update_correctly_guessed_letters(config, player_state, guess);
+    return true;
+}
+
 fn run_guessing_player_loop(config: &Config, player_state: &mut PlayerState) -> GameState {
     let guess = cli::take_guess();
 
-    if !config.secret_word.contains(guess) {
-        player_state.wrong_guesses += 1;
-
-        crate::cli::print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
+    if !is_correct_guess(config, player_state, guess) {
+        cli::print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
 
         if player_state.wrong_guesses >= config.lives {
             return GameState::LOST;
         } else {
-            crate::cli::print_wrong_guess(&(config.lives - player_state.wrong_guesses));
+            cli::print_wrong_guess(&(config.lives - player_state.wrong_guesses));
             return GameState::PLAYING;
         }
     }
 
-    update_correctly_guessed_letters(config, player_state, guess);
-
-    crate::cli::print_correct_guess(&player_state.correctly_guessed_letters);
+    cli::print_correct_guess(&player_state.correctly_guessed_letters);
 
     if player_state.correctly_guessed_letters == config.secret_word {
         return GameState::WON;
