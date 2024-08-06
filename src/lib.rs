@@ -8,7 +8,9 @@ mod cli;
 
 // game core
 
-fn run_game_loop(config: &Config, guess: char, player_state: &mut PlayerState) -> GameState {
+fn run_game_loop(config: &Config, player_state: &mut PlayerState) -> GameState {
+    let guess = cli::take_guess();
+
     if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
 
@@ -54,7 +56,7 @@ pub fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     let mut player_state = PlayerState::build(config);
 
     while state == GameState::PLAYING {
-        state = run_game_loop(config, crate::cli::take_guess(), &mut player_state);
+        state = run_game_loop(config, &mut player_state);
 
         if state == GameState::LOST {
             crate::cli::print_loss()
