@@ -26,7 +26,7 @@ fn take_guessing_player_guess() -> char {
 }
 
 fn print_and_determine_game_state(config: &Config, player_state: &mut PlayerState, correct_guess: bool) -> GameState {
-    if correct_guess {
+    if !correct_guess {
         cli::print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
 
         if player_state.wrong_guesses >= config.lives {
