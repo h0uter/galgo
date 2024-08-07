@@ -71,15 +71,10 @@ fn run_game(config: &Config) {
 
 pub fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     // run galgo with potential rematches
-    let mut rematch = true;
 
-    while rematch == true {
-        run_game(config);
-
-        let rematch_input = crate::cli::take_user_input("Do you want a rematch? (yes/no)");
-        if rematch_input.contains("n") {
-            rematch = false
-        }
+    while crate::cli::take_user_input("Start a new game? (yes/no)")
+        .eq_ignore_ascii_case("yes") {
+            run_game(config);
     }
 
     Ok(())
