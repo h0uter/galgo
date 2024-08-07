@@ -8,31 +8,48 @@ mod cli;
 
 // game core
 
-fn run_guess_loop(config: &Config, guess: char, player_state: &mut PlayerState) -> GameState {
-    // runs the logic for a single letter guess
-
+// This function will be the concern of the "word master" in a later increment
+fn is_correct_guess(config: &Config, player_state: &mut PlayerState, guess: char) -> bool {
     if !config.secret_word.contains(guess) {
         player_state.wrong_guesses += 1;
+        return false;
+    }
 
-        crate::cli::print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
+    update_correctly_guessed_letters(config, player_state, guess);
+    return true;
+}
+
+// This function and the print_and_determine function below will be the concern of
+// the "guessing player" in a later increment.
+fn take_guessing_player_guess() -> char {
+    cli::take_guess()
+}
+
+fn print_and_determine_game_state(config: &Config, player_state: &mut PlayerState, correct_guess: bool) -> GameState {
+    if !correct_guess {
+        cli::print_hangman_stage(player_state.wrong_guesses + (6 - config.lives));
 
         if player_state.wrong_guesses >= config.lives {
             return GameState::LOST;
         } else {
-            crate::cli::print_wrong_guess(&(config.lives - player_state.wrong_guesses));
+            cli::print_wrong_guess(&(config.lives - player_state.wrong_guesses));
             return GameState::PLAYING;
         }
     }
 
-    update_correctly_guessed_letters(config, player_state, guess);
-
-    crate::cli::print_correct_guess(&player_state.correctly_guessed_letters);
+    cli::print_correct_guess(&player_state.correctly_guessed_letters);
 
     if player_state.correctly_guessed_letters == config.secret_word {
         return GameState::WON;
     }
 
     return GameState::PLAYING;
+}
+
+fn run_game_loop(config: &Config, player_state: &mut PlayerState) -> GameState {
+    let guess = take_guessing_player_guess();
+    let correct_guess = is_correct_guess(config, player_state, guess);
+    return print_and_determine_game_state(config, player_state, correct_guess);
 }
 
 fn update_correctly_guessed_letters(config: &Config, player_state: &mut PlayerState, guess: char) {
@@ -57,7 +74,7 @@ fn run_game(config: &Config) {
     let mut player_state = PlayerState::build(config);
 
     while state == GameState::PLAYING {
-        state = run_guess_loop(config, crate::cli::take_guess(), &mut player_state);
+        state = run_game_loop(config, &mut player_state);
 
         if state == GameState::LOST {
             crate::cli::print_loss()
