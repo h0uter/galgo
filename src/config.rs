@@ -1,11 +1,12 @@
 pub mod game_session;
 use game_session::Session;
+use std::cell::RefCell;
 
 pub struct Config {
     // Static configuration we take at the start
     pub secret_word: String,
     pub lives: usize,
-    pub session: Box<dyn Session>,
+    pub session: RefCell<Box<dyn Session>>,
 }
 
 impl Config {
@@ -17,6 +18,6 @@ impl Config {
             panic!("lives cannot be larger than 7, we dont have more hangman drawings.")
         }
 
-        return Config { secret_word, lives, session };
+        return Config { secret_word, lives, session: RefCell::new(session) };
     }
 }
