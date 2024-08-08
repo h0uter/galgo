@@ -16,11 +16,11 @@ pub struct Result {
 
 pub trait Session {
     fn submit_config(&mut self, config: GameConfig);
-    fn receive_config(self) -> GameConfig;
+    fn receive_config(&mut self) -> GameConfig;
 
     fn submit_guess(&mut self, guess: Guess);
-    fn receive_guess(self) -> Guess;
+    fn receive_guess(&mut self) -> Guess;
 
     fn submit_result(&mut self, result: Result);
-    fn receive_result(self) -> Result;
+    fn receive_result(&mut self) -> Result;
 }

@@ -17,23 +17,23 @@ impl Session for LocalSession {
         self.config = Option::from(config);
     }
 
-    fn receive_config(self) -> GameConfig {
-        self.config.unwrap()
+    fn receive_config(&mut self) -> GameConfig {
+        self.config.take().unwrap()
     }
 
     fn submit_guess(&mut self, guess: Guess) {
         self.guess = Option::from(guess);
     }
 
-    fn receive_guess(self) -> Guess {
-        self.guess.unwrap()
+    fn receive_guess(&mut self) -> Guess {
+        self.guess.take().unwrap()
     }
 
     fn submit_result(&mut self, result: Result) {
         self.result = Option::from(result);
     }
 
-    fn receive_result(self) -> Result {
-        self.result.unwrap()
+    fn receive_result(&mut self) -> Result {
+        self.result.take().unwrap()
     }
 }
