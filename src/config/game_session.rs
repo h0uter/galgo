@@ -1,17 +1,17 @@
 pub mod local_session;
 
 pub struct GameConfig {
-    secret_word_length: usize,
-    total_lives: usize,
+    pub secret_word_length: usize,
+    pub total_lives: usize,
 }
 
 pub struct Guess {
-    guess: char,
+    pub guess: char,
 }
 
 pub struct Result {
-    was_correct: bool,
-    hit_idxs: Vec<usize>,
+    pub was_correct: bool,
+    pub hit_idxs: Vec<usize>,
 }
 
 pub trait Session {
